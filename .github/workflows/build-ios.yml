@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
- 
+
 jobs:
   build-ios:
     name: Build iOS App
@@ -13,26 +13,36 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install briefcase toga
 
+      - name: Create iOS project
+        run: briefcase create iOS
+
       - name: Build iOS app
+        run: briefcase build iOS
+
+      - name: Package iOS app (create .ipa)
+        run: briefcase package iOS -u --adhoc-sign
+
+      # ማረሚያ: .ipa ፋይሉን ለማግኘት (አማራጭ ነገር ግን ጠቃሚ)
+      - name: Find IPA file
         run: |
-          py -m briefcase create iOS
-          py -m briefcase build iOS
-          py -m briefcase package iOS
+          echo "Searching for .ipa file..."
+          find . -name "*.ipa" -type f
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: YegnaGebeta.ipa
-          path: iOS/build/YegnaGebeta.ipa
+          path: "**/*.ipa"
+          if-no-files-found: error

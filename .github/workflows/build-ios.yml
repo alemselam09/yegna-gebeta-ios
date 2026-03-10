@@ -32,8 +32,7 @@ jobs:
           py -m briefcase package iOS
 
       - name: Upload IPA artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: YegnaGebeta.ipa
-          path: |
-            iOS/build/YegnaGebeta.ipa
+          path: iOS/build/YegnaGebeta.ipa
